@@ -1,3 +1,5 @@
+import MatchException from "./MatchException";
+
 export class Match {
   public readonly homeTeam: string;
   public readonly awayTeam: string;
@@ -7,11 +9,11 @@ export class Match {
 
   constructor(homeTeam: string, awayTeam: string) {
     if (homeTeam.toLowerCase() === awayTeam.toLowerCase()) {
-      throw new Error("Home and away teams cannot be the same.");
+      throw new MatchException.DuplicateTeamName();
     }
 
     if (!homeTeam || !awayTeam) {
-      throw new Error("Team names cannot be empty.");
+      throw new MatchException.EmptyTeamName();
     }
 
     this.homeTeam = homeTeam;
@@ -20,18 +22,18 @@ export class Match {
 
   updateScore(newHomeScore: number, newAwayScore: number): void {
     if (newHomeScore < 0 || newAwayScore < 0) {
-      throw new Error("Cannot update score with negative values.");
+      throw new MatchException.NegativeScore();
     }
 
     if (this.homeScore === newHomeScore && this.awayScore === newAwayScore) {
-      throw new Error("Cannot update score with the same values.");
+      throw new MatchException.SameScore();
     }
 
     if (
       newHomeScore - this.homeScore > 1 ||
       newAwayScore - this.awayScore > 1
     ) {
-      throw new Error("Cannot update score with more than 1 goal difference.");
+      throw new MatchException.ScoreDifferenceMoreThanOne();
     }
 
     this.homeScore = newHomeScore;
