@@ -1,7 +1,9 @@
+import { v4 as uuidv4 } from "uuid";
 import { Match } from "../models/Match";
 import ScoreboardException from "./ScoreboardException";
 
 export class Scoreboard {
+  private readonly id: string = uuidv4();
   private matches: Match[] = [];
 
   startMatch(homeTeam: string, awayTeam: string): Match {
@@ -39,9 +41,7 @@ export class Scoreboard {
 
   finishMatch(matchToFinish: Match): void {
     const index = this.matches.findIndex(
-      (match) =>
-        match.homeTeam === matchToFinish.homeTeam &&
-        match.awayTeam === matchToFinish.awayTeam
+      (match) => match.getId() === matchToFinish.getId()
     );
     if (index === -1) {
       throw new ScoreboardException.MatchNotFound();
@@ -57,12 +57,14 @@ export class Scoreboard {
   }
 
   private findMatch(match: Match): Match | undefined {
-    return this.matches.find(
-      (m) => m.homeTeam === match.homeTeam && m.awayTeam === match.awayTeam
-    );
+    return this.matches.find((m) => m.getId() === match.getId());
   }
 
   getMatches(): Match[] {
     return this.matches;
+  }
+
+  getId(): string {
+    return this.id;
   }
 }

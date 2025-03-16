@@ -1,6 +1,8 @@
+import { v4 as uuidv4 } from "uuid";
 import MatchException from "./MatchException";
 
 export class Match {
+  private readonly id: string = uuidv4();
   public readonly homeTeam: string;
   public readonly awayTeam: string;
   private homeScore: number = 0;
@@ -58,5 +60,9 @@ export class Match {
 
   public getStartTime(): number {
     return this.startTime;
+  }
+
+  public getId(): string {
+    return this.id;
   }
 }
