@@ -1,5 +1,6 @@
 import { Match } from "../../src/models/Match";
 import MatchException from "../../src/models/MatchException";
+import { Scoreboard } from "../../src/services/Scoreboard";
 
 describe("Match", () => {
   // Test cases for successful match creation
@@ -17,6 +18,19 @@ describe("Match", () => {
 
     expect(match.getHomeScore()).toBe(0);
     expect(match.getAwayScore()).toBe(0);
+  });
+
+  test("should not have a start time if not created through Scoreboard", () => {
+    const match = new Match("Team A", "Team B");
+
+    expect(match.getStartTime()).toBe(-1);
+  });
+
+  test("should have a start time if created through Scoreboard", () => {
+    const scoreboard = new Scoreboard();
+    const match = scoreboard.startMatch("Team A", "Team B");
+
+    expect(match.getStartTime()).toBeGreaterThan(0);
   });
 
   // Test cases for successful score updates
