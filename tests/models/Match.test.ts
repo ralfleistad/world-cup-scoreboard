@@ -1,4 +1,5 @@
 import { Match } from "../../src/models/Match";
+import MatchException from "../../src/models/MatchException";
 
 describe("Match", () => {
   // Test cases for successful match creation
@@ -50,49 +51,43 @@ describe("Match", () => {
   // Test cases for match creation error handling
   test("should not allow same team for home and away", () => {
     expect(() => new Match("Team A", "Team A")).toThrow(
-      "Home and away teams cannot be the same."
+      MatchException.DuplicateTeamName
     );
     expect(() => new Match("team a", "Team A")).toThrow(
-      "Home and away teams cannot be the same."
+      MatchException.DuplicateTeamName
     );
   });
 
   test("should not allow empty team names", () => {
-    expect(() => new Match("", "Team B")).toThrow(
-      "Team names cannot be empty."
-    );
-    expect(() => new Match("Team A", "")).toThrow(
-      "Team names cannot be empty."
-    );
+    expect(() => new Match("", "Team B")).toThrow(MatchException.EmptyTeamName);
+    expect(() => new Match("Team A", "")).toThrow(MatchException.EmptyTeamName);
   });
 
   // Test cases for score update error handling
   test("should not allow score updates with negative scores", () => {
     const match = new Match("Team A", "Team B");
     expect(() => match.updateScore(-1, 0)).toThrow(
-      "Cannot update score with negative values."
+      MatchException.NegativeScore
     );
     expect(() => match.updateScore(0, -1)).toThrow(
-      "Cannot update score with negative values."
+      MatchException.NegativeScore
     );
   });
 
   test("should not allow updating score with the same value", () => {
     const match = new Match("Team A", "Team B");
     match.updateScore(1, 0);
-    expect(() => match.updateScore(1, 0)).toThrow(
-      "Cannot update score with the same values."
-    );
+    expect(() => match.updateScore(1, 0)).toThrow(MatchException.SameScore);
   });
 
   test("should not allow updating team score with more than 1 goal difference", () => {
     const match = new Match("Team A", "Team B");
     match.updateScore(1, 1);
     expect(() => match.updateScore(3, 2)).toThrow(
-      "Cannot update score with more than 1 goal difference."
+      MatchException.ScoreDifferenceMoreThanOne
     );
     expect(() => match.updateScore(2, 3)).toThrow(
-      "Cannot update score with more than 1 goal difference."
+      MatchException.ScoreDifferenceMoreThanOne
     );
   });
 });
