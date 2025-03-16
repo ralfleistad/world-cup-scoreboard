@@ -7,7 +7,7 @@ export class Match {
   public readonly awayTeam: string;
   private homeScore: number = 0;
   private awayScore: number = 0;
-  private readonly startTime: number = Date.now();
+  private readonly startTime: number = -1;
 
   constructor(homeTeam: string, awayTeam: string) {
     if (homeTeam.toLowerCase() === awayTeam.toLowerCase()) {
@@ -16,6 +16,13 @@ export class Match {
 
     if (!homeTeam || !awayTeam) {
       throw new MatchException.EmptyTeamName();
+    }
+
+    const stack = new Error().stack;
+    const isCalledFromScoreboard = stack?.includes("Scoreboard.startMatch");
+
+    if (isCalledFromScoreboard) {
+      this.startTime = Date.now();
     }
 
     this.homeTeam = homeTeam;

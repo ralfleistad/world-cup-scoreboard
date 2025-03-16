@@ -19,6 +19,7 @@ Some assumptions are made in this implementation to make it behave a bit more si
 4. The score of a team cannot be negative.
 5. The score of a team cannot be updated to a value lower than the current score.
 6. The score of a team cannot be increased by more than 1 goal at a time.
+7. A match's start time is only set when created through the `Scoreboard` class, when the `startMatch` method is called. This is to ensure that the start time is only set when the match is actually started.
 
 # Usage
 First, install the dependencies.

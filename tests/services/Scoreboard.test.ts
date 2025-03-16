@@ -19,6 +19,13 @@ describe("Scoreboard", () => {
     expect(match.awayTeam).toBe("Team B");
   });
 
+  test("should set the start time of the match", () => {
+    const scoreboard = new Scoreboard();
+    const match = scoreboard.startMatch("Team A", "Team B");
+
+    expect(match.getStartTime()).toBeGreaterThan(0);
+  });
+
   // Test cases for successfully updating a match score
   test("should successfully update a match score", () => {
     const scoreboard = new Scoreboard();
