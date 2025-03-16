@@ -1,11 +1,12 @@
 import { Match } from "../models/Match";
+import ScoreboardException from "./ScoreboardException";
 
 export class Scoreboard {
   private matches: Match[] = [];
 
   startMatch(homeTeam: string, awayTeam: string): Match {
     if (!homeTeam || !awayTeam) {
-      throw new Error("Both teams must be provided.");
+      throw new ScoreboardException.MissingTeam();
     }
 
     const homeTeamAlreadyExists = this.matches.some(
@@ -20,7 +21,7 @@ export class Scoreboard {
     );
 
     if (homeTeamAlreadyExists || awayTeamAlreadyExists) {
-      throw new Error("One or more team is already in an existing match.");
+      throw new ScoreboardException.TeamAlreadyInMatch();
     }
 
     const match = new Match(homeTeam, awayTeam);
@@ -31,9 +32,7 @@ export class Scoreboard {
   updateScore(match: Match, homeScore: number, awayScore: number): void {
     const matchToUpdate = this.findMatch(match);
     if (!matchToUpdate) {
-      throw new Error(
-        "Could not update score for non-existent match. Make sure the match is started."
-      );
+      throw new ScoreboardException.MatchNotFound();
     }
     matchToUpdate.updateScore(homeScore, awayScore);
   }
@@ -45,9 +44,7 @@ export class Scoreboard {
         match.awayTeam === matchToFinish.awayTeam
     );
     if (index === -1) {
-      throw new Error(
-        "Could not finish non-existent match. Make sure the match is started."
-      );
+      throw new ScoreboardException.MatchNotFound();
     }
     this.matches.splice(index, 1);
   }

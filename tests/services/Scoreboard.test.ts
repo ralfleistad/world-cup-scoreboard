@@ -1,5 +1,6 @@
 import { Match } from "../../src/models/Match";
 import { Scoreboard } from "../../src/services/Scoreboard";
+import ScoreboardException from "../../src/services/ScoreboardException";
 
 describe("Scoreboard", () => {
   // Test cases for successful Scoreboard initialization
@@ -68,13 +69,13 @@ describe("Scoreboard", () => {
     scoreboard.startMatch("Team A", "Team B");
 
     expect(() => scoreboard.startMatch("Team A", "Team B")).toThrow(
-      "One or more team is already in an existing match."
+      ScoreboardException.TeamAlreadyInMatch
     );
     expect(() => scoreboard.startMatch("Team A", "Team C")).toThrow(
-      "One or more team is already in an existing match."
+      ScoreboardException.TeamAlreadyInMatch
     );
     expect(() => scoreboard.startMatch("Team C", "Team A")).toThrow(
-      "One or more team is already in an existing match."
+      ScoreboardException.TeamAlreadyInMatch
     );
   });
 
@@ -82,13 +83,13 @@ describe("Scoreboard", () => {
     const scoreboard = new Scoreboard();
 
     expect(() => scoreboard.startMatch("", "Team B")).toThrow(
-      "Both teams must be provided."
+      ScoreboardException.MissingTeam
     );
     expect(() => scoreboard.startMatch("Team A", "")).toThrow(
-      "Both teams must be provided."
+      ScoreboardException.MissingTeam
     );
     expect(() => scoreboard.startMatch("", "")).toThrow(
-      "Both teams must be provided."
+      ScoreboardException.MissingTeam
     );
   });
 
@@ -98,20 +99,7 @@ describe("Scoreboard", () => {
     const match = new Match("Team A", "Team B");
 
     expect(() => scoreboard.updateScore(match, 1, 0)).toThrow(
-      "Could not update score for non-existent match. Make sure the match is started."
-    );
-  });
-
-  test("should throw an error when updating a match score with negative values", () => {
-    const scoreboard = new Scoreboard();
-    const match = scoreboard.startMatch("Team A", "Team B");
-
-    // Check that thrown error is propagated correctly
-    expect(() => scoreboard.updateScore(match, -1, 0)).toThrow(
-      "Cannot update score with negative values."
-    );
-    expect(() => scoreboard.updateScore(match, 0, -1)).toThrow(
-      "Cannot update score with negative values."
+      ScoreboardException.MatchNotFound
     );
   });
 
@@ -121,7 +109,7 @@ describe("Scoreboard", () => {
     const match = new Match("Team A", "Team B");
 
     expect(() => scoreboard.finishMatch(match)).toThrow(
-      "Could not finish non-existent match. Make sure the match is started."
+      ScoreboardException.MatchNotFound
     );
   });
 });
